@@ -28,7 +28,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["01_python_fundamentals", "02_data_analytics", "utils"]
+packages = ["01_python_core", "02_data_analytics", "utils"]
 
 [tool.ruff]
 line-length = 88
