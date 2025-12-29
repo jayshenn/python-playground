@@ -55,6 +55,41 @@ python-playground/
 │   ├── docs/                    # 文档
 │   ├── tests/                   # 测试
 │   └── notebooks/               # Jupyter Notebooks
+├── 03_langchain_foundation/     # LangChain 基础学习
+│   ├── 01_module1/              # Module 1: 创建代理
+│   │   ├── __init__.py
+│   │   └── notebooks/           # 基础模型、工具、记忆、多模态
+│   ├── 02_module2/              # Module 2: 高级代理
+│   │   ├── __init__.py
+│   │   └── notebooks/           # MCP、状态管理、多代理系统
+│   ├── 03_module3/              # Module 3: 生产就绪代理
+│   │   ├── __init__.py
+│   │   └── notebooks/           # 中间件、HITL、动态代理
+│   ├── utils/                   # LangChain 工具
+│   │   ├── __init__.py
+│   │   └── env_utils.py         # 环境配置工具
+│   ├── tests/                   # 测试
+│   ├── docs/                    # 完整中文学习文档（13 个文件，10 万+ 字）
+│   │   ├── README.md            # 总索引（学习路径、环境配置、技术栈对比）
+│   │   ├── 01_langchain/        # LangChain (Python) 模块
+│   │   │   ├── README.md        # 模块索引
+│   │   │   ├── 01_核心组件.md    # Agents、Models、Tools、Messages、Memory
+│   │   │   └── 02_高级特性.md    # Middleware、Multi-agent、HITL、Guardrails
+│   │   ├── 02_langgraph/        # LangGraph (Python) 模块
+│   │   │   ├── README.md        # 模块索引
+│   │   │   ├── 01_基础.md        # Graph API、Functional API、State
+│   │   │   └── 02_高级特性.md    # Persistence、Interrupts、Memory、Streaming
+│   │   ├── 03_deepagents/       # Deep Agents (Python) 模块
+│   │   │   ├── README.md        # 模块索引
+│   │   │   ├── 01_基础.md        # 四大核心能力、快速开始
+│   │   │   └── 02_高级特性.md    # Backends、Subagents、Long-term Memory
+│   │   └── 04_langsmith/        # LangSmith 模块
+│   │       ├── README.md        # 模块索引
+│   │       ├── 01_可观测性与评估.md  # Observability、Tracing、Evaluation
+│   │       └── 02_部署.md        # Cloud Deployment、生产最佳实践
+│   ├── README.md                # 项目说明（中文）
+│   ├── .env.example             # 环境变量模板
+│   └── example.env              # 环境变量模板（备份）
 ├── utils/                       # 项目共享工具
 ├── docs/                        # 项目级文档
 │   └── uv-tutorial.md          # uv包管理器教程
@@ -89,10 +124,15 @@ uv sync --extra dev
 
 ### 已安装的主要库
 
-- **数据分析**: numpy, pandas, matplotlib, seaborn
-- **交互式开发**: jupyter, ipython
+- **数据分析**: numpy, pandas, matplotlib, seaborn, scipy
+- **交互式开发**: jupyter, jupyterlab, ipython, ipykernel, ipywidgets
 - **代码质量**: ruff
-- **实用工具**: requests
+- **实用工具**: requests, python-dotenv, pydantic
+- **LangChain 生态**:
+  - 核心: langchain, langchain-core, langchain-community, langgraph
+  - 集成: langchain-openai, langchain-anthropic, langchain-google-vertexai
+  - 工具: tavily, mcp, langsmith
+  - 文档处理: pypdf, langchain-text-splitters
 
 ## 使用指南
 
@@ -109,6 +149,26 @@ uv run python 01_python_core/02_data_structures/01_lists.py
 
 # 运行数据分析示例
 uv run python 02_data_analytics/01_numpy/01_intro.py
+
+# 运行 LangChain 示例
+uv run python 03_langchain_foundation/01_module1/notebooks/1.5_personal_chef.py
+```
+
+### LangChain 环境配置
+
+```bash
+# 进入 langchain foundation 目录
+cd 03_langchain_foundation
+
+# 复制环境变量模板
+cp example.env .env
+
+# 编辑 .env 文件，添加你的 API 密钥
+# 必需：OPENAI_API_KEY, TAVILY_API_KEY
+# 可选：ANTHROPIC_API_KEY, GOOGLE_API_KEY, LANGSMITH_API_KEY
+
+# 验证环境配置
+uv run python utils/env_utils.py
 ```
 
 ### 启动 Jupyter Notebook
@@ -173,11 +233,70 @@ uv run pytest --cov
    - 03_visualization - Matplotlib/Seaborn 可视化
    - 04_projects - 综合项目实践
 
+### 03. LangChain 基础 (`03_langchain_foundation/`)
+
+本模块整合自 LangChain Academy 官方课程，包含完整的中文学习文档和三个实战模块。
+
+#### 📚 学习文档（推荐从这里开始！）
+
+**总索引**: [docs/README.md](03_langchain_foundation/docs/README.md) ⭐ 必读
+- LangChain Foundation 技术栈完整概览
+- 四种学习路径（快速入门、进阶开发、生产专家、场景驱动）
+- 环境配置、技术栈对比、常见问题解答
+
+**四大核心模块文档**（13 个文件，10 万+ 字，100+ 代码示例）：
+
+1. **[LangChain (Python)](03_langchain_foundation/docs/01_langchain/)** - 高级框架，快速构建
+   - [核心组件](03_langchain_foundation/docs/01_langchain/01_核心组件.md): Agents、Models、Tools、Messages、Memory、Streaming
+   - [高级特性](03_langchain_foundation/docs/01_langchain/02_高级特性.md): Middleware、Multi-agent、Context Engineering、HITL、Guardrails
+
+2. **[LangGraph (Python)](03_langchain_foundation/docs/02_langgraph/)** - 低级编排框架，精确控制
+   - [基础](03_langchain_foundation/docs/02_langgraph/01_基础.md): Graph API、Functional API、State Management
+   - [高级特性](03_langchain_foundation/docs/02_langgraph/02_高级特性.md): Persistence、Interrupts、Memory、Durable Execution、Streaming
+
+3. **[Deep Agents (Python)](03_langchain_foundation/docs/03_deepagents/)** - 处理复杂多步骤任务
+   - [基础](03_langchain_foundation/docs/03_deepagents/01_基础.md): 四大核心能力、快速开始、自定义配置
+   - [高级特性](03_langchain_foundation/docs/03_deepagents/02_高级特性.md): Backends、Subagents、Long-term Memory、HITL
+
+4. **[LangSmith](03_langchain_foundation/docs/04_langsmith/)** - 可观测性、评估和部署
+   - [可观测性与评估](03_langchain_foundation/docs/04_langsmith/01_可观测性与评估.md): Observability、Tracing、Evaluation
+   - [部署](03_langchain_foundation/docs/04_langsmith/02_部署.md): Cloud Deployment、配置管理、生产环境最佳实践
+
+#### 💻 实战模块（Jupyter Notebooks）
+
+**Module 1 - 创建代理**（基础，3-5 天）
+   - 1.1 基础模型和提示词（Foundational Models & Prompting）
+   - 1.2 工具和 Web 搜索（Tools & Web Search）
+   - 1.3 记忆系统（Memory）
+   - 1.4 多模态消息（Multimodal Messages）
+   - 1.5 项目：个人厨师（Personal Chef）
+
+**Module 2 - 高级代理**（进阶，1-2 周）
+   - 2.1 Model Context Protocol (MCP)
+   - 2.2 状态管理和运行时上下文（State & Runtime Context）
+   - 2.3 多代理系统（Multi-Agent Systems）
+   - 2.4 项目：婚礼策划师（Wedding Planner）
+   - 附加：RAG 系统、SQL 代理
+
+**Module 3 - 生产就绪代理**（高级，2-3 周）
+   - 3.1 中间件系统（Middleware）
+   - 3.2 消息管理（Managing Long Conversations）
+   - 3.3 人机协作（Human-in-the-Loop, HITL）
+   - 3.4 动态代理（Dynamic Prompts/Tools/Models）
+   - 3.5 项目：邮件助手（Email Assistant）
+
+#### 🎯 推荐学习流程
+
+1. **阅读文档**（2-3 天）：从 [docs/README.md](03_langchain_foundation/docs/README.md) 开始，系统学习四大模块文档
+2. **环境配置**（1 小时）：配置 API 密钥，验证环境
+3. **实战练习**（2-6 周）：按顺序完成三个模块的 notebooks 和项目
+4. **进阶学习**：阅读高级特性文档，构建完整项目
+
 ### 未来扩展方向
-   - `03_web_development/` - Web 开发（Flask/Django/FastAPI）
-   - `04_machine_learning/` - 机器学习（scikit-learn/TensorFlow）
-   - `05_big_data/` - 大数据处理（PySpark）
-   - `06_automation/` - 自动化脚本
+   - `04_web_development/` - Web 开发（Flask/Django/FastAPI）
+   - `05_machine_learning/` - 机器学习（scikit-learn/TensorFlow）
+   - `06_big_data/` - 大数据处理（PySpark）
+   - `07_automation/` - 自动化脚本
 
 ## 项目版本
 

@@ -89,6 +89,27 @@ uv run pytest --cov
   - `docs/`: 该领域的文档
   - `notebooks/`: 该领域的 Jupyter notebooks
 
+- **`03_langchain_foundation/`**: LangChain 基础学习（整合自 langchain-ai/lca-lc-foundations）
+  - `01_module1/`: 模块 1 - 创建代理（基础模型、工具、记忆、多模态）
+  - `02_module2/`: 模块 2 - 高级代理（MCP、状态管理、多代理系统）
+  - `03_module3/`: 模块 3 - 生产就绪代理（中间件、HITL、动态代理）
+  - `utils/`: LangChain 相关工具（环境配置等）
+  - `tests/`: 该领域的测试代码
+  - `docs/`: 完整的中文学习文档（13 个文件，10 万+ 字）
+    - `README.md`: 总索引，包含学习路径、环境配置、技术栈对比
+    - `01_langchain/`: LangChain (Python) 模块文档（高级框架）
+      - `01_核心组件.md`: Agents、Models、Tools、Messages、Memory、Streaming
+      - `02_高级特性.md`: Middleware、Multi-agent、Context Engineering、HITL、Guardrails
+    - `02_langgraph/`: LangGraph (Python) 模块文档（低级编排框架）
+      - `01_基础.md`: Graph API、Functional API、State Management
+      - `02_高级特性.md`: Persistence、Interrupts、Memory、Durable Execution、Streaming
+    - `03_deepagents/`: Deep Agents (Python) 模块文档（复杂任务处理）
+      - `01_基础.md`: 四大核心能力、快速开始、自定义配置
+      - `02_高级特性.md`: Backends、Subagents、Long-term Memory、HITL
+    - `04_langsmith/`: LangSmith 模块文档（可观测性和部署）
+      - `01_可观测性与评估.md`: Observability、Tracing、Evaluation
+      - `02_部署.md`: Cloud Deployment、配置管理、生产环境最佳实践
+
 - **`utils/`**: 项目共享工具函数
 
 - **`docs/`**: 项目级文档（如项目说明、架构文档）
@@ -131,13 +152,39 @@ uv run pytest --cov
 ### 依赖项
 
 核心依赖：
-- 数据分析：numpy, pandas, matplotlib, seaborn
-- 交互式开发：jupyter, ipython
+- 数据分析：numpy, pandas, matplotlib, seaborn, scipy
+- 交互式开发：jupyter, jupyterlab, ipython, ipykernel, ipywidgets
 - 代码质量：ruff
-- 实用工具：requests
+- 实用工具：requests, python-dotenv, pydantic
+- LangChain 生态：
+  - 核心：langchain, langchain-core, langchain-community, langgraph
+  - 集成：langchain-openai, langchain-anthropic, langchain-google-vertexai
+  - 工具：tavily, mcp, langsmith
+  - 文档处理：pypdf, langchain-text-splitters
 
 开发依赖：
 - 测试：pytest, pytest-cov
+
+### LangChain Foundation 环境配置
+
+使用 LangChain Foundation 模块时需要配置 API 密钥：
+
+```bash
+# 进入 langchain foundation 目录
+cd 03_langchain_foundation
+
+# 复制环境变量示例文件
+cp example.env .env
+
+# 编辑 .env 文件，添加你的 API 密钥
+# 必需：OPENAI_API_KEY, TAVILY_API_KEY
+# 可选：ANTHROPIC_API_KEY, GOOGLE_API_KEY, LANGSMITH_API_KEY
+
+# 验证环境配置
+uv run python utils/env_utils.py
+```
+
+详细使用说明请参阅 `03_langchain_foundation/docs/README.md`
 
 ### Git 工作流
 
