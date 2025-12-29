@@ -19,6 +19,9 @@ dependencies = [
 
     # 实用工具
     "requests>=2.32.0",
+    
+    # 类型验证和数据解析
+    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
