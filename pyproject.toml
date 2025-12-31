@@ -57,6 +57,11 @@ dependencies = [
 
     # 音频处理
     "sounddevice>=0.5.3",
+
+    # Pydantic AI
+    "pydantic-ai>=0.0.14",
+    "pydantic-ai-slim[openai]>=0.0.14",
+    "httpx>=0.28.0",
 ]
 
 [project.optional-dependencies]
@@ -66,7 +71,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["01_python_core", "02_data_analytics", "03_langchain_foundation", "utils"]
+packages = ["01_python_core", "02_data_analytics", "03_langchain_foundation", "04_pydantic_ai", "utils"]
 
 [tool.ruff]
 line-length = 88
