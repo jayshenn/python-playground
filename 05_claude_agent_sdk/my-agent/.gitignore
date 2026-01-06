@@ -1,0 +1,14 @@
+# 环境变量文件
+# 请勿提交到 Git 仓库
+.env
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 日志文件
+*.log
+hook_log.txt
+audit_log.txt
+fix_log.txt

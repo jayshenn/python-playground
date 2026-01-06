@@ -90,6 +90,30 @@ python-playground/
 │   ├── README.md                # 项目说明（中文）
 │   ├── .env.example             # 环境变量模板
 │   └── example.env              # 环境变量模板（备份）
+├── 04_pydantic_ai/              # Pydantic AI 学习
+│   ├── 01_basics/               # 基础入门
+│   ├── 02_agents/               # 代理系统
+│   ├── 03_tools/                # 工具使用
+│   ├── 04_models/               # 模型集成
+│   ├── 05_advanced/             # 高级特性
+│   ├── tests/                   # 测试
+│   ├── docs/                    # 学习文档
+│   ├── examples/                # 示例项目
+│   ├── notebooks/               # Jupyter notebooks
+│   └── README.md                # 模块说明
+├── 05_claude_agent_sdk/         # Claude Agent SDK 学习
+│   ├── my-agent/                # 示例项目
+│   │   ├── hello.py             # Hello World 示例
+│   │   ├── .env.example         # 环境变量模板
+│   │   └── .gitignore           # Git 忽略配置
+│   ├── tests/                   # 测试
+│   ├── docs/                    # 学习文档
+│   │   ├── README.md            # 文档索引和学习指南
+│   │   ├── 01_Agent SDK 概览.md # SDK 概览
+│   │   ├── 02_快速开始.md        # 快速入门
+│   │   └── 03_Agent SDK 参考 - Python.md # 完整 API 参考
+│   ├── notebooks/               # Jupyter notebooks（可选）
+│   └── README.md                # 模块说明
 ├── utils/                       # 项目共享工具
 ├── docs/                        # 项目级文档
 │   └── uv-tutorial.md          # uv包管理器教程
@@ -128,11 +152,12 @@ uv sync --extra dev
 - **交互式开发**: jupyter, jupyterlab, ipython, ipykernel, ipywidgets
 - **代码质量**: ruff
 - **实用工具**: requests, python-dotenv, pydantic
-- **LangChain 生态**:
-  - 核心: langchain, langchain-core, langchain-community, langgraph
-  - 集成: langchain-openai, langchain-anthropic, langchain-google-vertexai
-  - 工具: tavily, mcp, langsmith
-  - 文档处理: pypdf, langchain-text-splitters
+- **AI 代理框架**:
+  - **LangChain 生态**: langchain, langchain-core, langchain-community, langgraph
+  - **LangChain 集成**: langchain-openai, langchain-anthropic, langchain-google-vertexai
+  - **LangChain 工具**: tavily, mcp, langsmith
+  - **Claude Agent SDK**: claude-agent-sdk
+- **文档处理**: pypdf, langchain-text-splitters
 
 ## 使用指南
 
@@ -152,6 +177,9 @@ uv run python 02_data_analytics/01_numpy/01_intro.py
 
 # 运行 LangChain 示例
 uv run python 03_langchain_foundation/01_module1/notebooks/1.5_personal_chef.py
+
+# 运行 Claude Agent SDK 示例
+uv run python 05_claude_agent_sdk/my-agent/hello.py
 ```
 
 ### LangChain 环境配置
@@ -292,11 +320,81 @@ uv run pytest --cov
 3. **实战练习**（2-6 周）：按顺序完成三个模块的 notebooks 和项目
 4. **进阶学习**：阅读高级特性文档，构建完整项目
 
+### 04. Pydantic AI (`04_pydantic_ai/`)
+
+基于 Pydantic 的现代 Python AI 代理框架学习模块。
+
+详细内容请参阅 [04_pydantic_ai/README.md](04_pydantic_ai/README.md)
+
+### 05. Claude Agent SDK (`05_claude_agent_sdk/`)
+
+使用 Claude Code 作为库构建生产级 AI 代理的学习模块。采用**文档驱动学习**方式。
+
+#### 📚 核心功能
+- **内置工具**: Read、Write、Edit、Bash、Glob、Grep、WebSearch、WebFetch
+- **钩子系统**: 在代理生命周期关键点运行自定义代码
+- **子代理**: 生成专门的代理处理专注的子任务
+- **MCP 集成**: 通过模型上下文协议连接外部系统
+- **权限控制**: 精确控制代理可以使用哪些工具
+- **会话管理**: 在多次交互中保持上下文
+
+#### 📖 学习方式
+
+本模块不提供预先写好的示例代码，而是提供完整的文档和一个最简单的 Hello World 示例。推荐的学习流程：
+
+1. **阅读文档** (`docs/`) - 完整的 API 参考和概念说明
+   - `README.md` - 学习方法和文档索引
+   - `01_Agent SDK 概览.md` - SDK 整体架构
+   - `02_快速开始.md` - 第一个代理
+   - `03_Agent SDK 参考 - Python.md` - 完整 API 参考
+
+2. **运行示例** (`my-agent/hello.py`) - 最简单的 Hello World
+
+3. **自主探索** - 根据文档在 `my-agent/` 或新项目中实验
+
+#### 🚀 快速开始
+
+```bash
+# 1. 安装依赖（如果还没安装）
+uv sync
+
+# 2. 配置环境变量
+cd 05_claude_agent_sdk/my-agent
+cp .env.example .env
+# 编辑 .env 文件，填入你的 API 密钥
+
+# 3. 运行 Hello World 示例
+uv run python 05_claude_agent_sdk/my-agent/hello.py
+```
+
+#### 🎯 学习路径
+
+1. **阅读官方文档**（2-3 天）
+   - [概览](https://platform.claude.com/docs/zh-CN/agent-sdk/overview) - 了解整体架构
+   - [快速入门](https://platform.claude.com/docs/zh-CN/agent-sdk/quickstart) - 第一个代理
+   - [Python API](https://platform.claude.com/docs/zh-CN/agent-sdk/python) - 完整 API 参考
+
+2. **边学边记录**（持续）
+   - 在 `docs/` 目录创建自己的学习笔记
+   - 记录遇到的问题和解决方案
+   - 总结最佳实践
+
+3. **实践验证**（1-2 周）
+   - 在 `my-agent/` 或新项目中验证所学
+   - 从简单功能开始逐步增加复杂度
+   - 参考 `docs/README.md` 中的文档模板
+
+#### 📚 参考资源
+- [官方文档](https://platform.claude.com/docs/zh-CN/agent-sdk/overview)
+- [Python SDK GitHub](https://github.com/anthropics/claude-agent-sdk-python)
+- [示例代理](https://github.com/anthropics/claude-agent-sdk-demos)
+- [MCP 服务器列表](https://github.com/modelcontextprotocol/servers)
+
 ### 未来扩展方向
-   - `04_web_development/` - Web 开发（Flask/Django/FastAPI）
-   - `05_machine_learning/` - 机器学习（scikit-learn/TensorFlow）
-   - `06_big_data/` - 大数据处理（PySpark）
-   - `07_automation/` - 自动化脚本
+   - `06_web_development/` - Web 开发（Flask/Django/FastAPI）
+   - `07_machine_learning/` - 机器学习（scikit-learn/TensorFlow）
+   - `08_big_data/` - 大数据处理（PySpark）
+   - `09_automation/` - 自动化脚本
 
 ## 项目版本
 

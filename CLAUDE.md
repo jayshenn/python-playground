@@ -30,6 +30,8 @@ uv run python <script_path>
 
 # 示例：
 uv run python 02_data_analytics/01_numpy/01_intro.py
+uv run python 03_langchain_foundation/01_module1/notebooks/1.5_personal_chef.py
+uv run python 05_claude_agent_sdk/my-agent/hello.py
 ```
 
 ### Jupyter Notebook
@@ -110,6 +112,30 @@ uv run pytest --cov
       - `01_可观测性与评估.md`: Observability、Tracing、Evaluation
       - `02_部署.md`: Cloud Deployment、配置管理、生产环境最佳实践
 
+- **`04_pydantic_ai/`**: Pydantic AI 学习（基于 Pydantic 的现代 Python AI 代理框架）
+  - `01_basics/`: 基础入门
+  - `02_agents/`: 代理系统
+  - `03_tools/`: 工具使用
+  - `04_models/`: 模型集成
+  - `05_advanced/`: 高级特性
+  - `tests/`: 该领域的测试代码
+  - `docs/`: 该领域的文档
+  - `examples/`: 示例项目
+  - `notebooks/`: 该领域的 Jupyter notebooks
+
+- **`05_claude_agent_sdk/`**: Claude Agent SDK 学习（使用 Claude Code 作为库构建生产级 AI 代理）
+  - `my-agent/`: 示例项目
+    - `hello.py`: 最简单的 Hello World 示例
+    - `.env.example`: 环境变量模板
+    - `.gitignore`: Git 忽略配置
+  - `tests/`: 该领域的测试代码
+  - `docs/`: 完整的学习文档（文档驱动学习）
+    - `README.md`: 文档索引和学习指南
+    - `01_Agent SDK 概览.md`: SDK 整体架构
+    - `02_快速开始.md`: 快速入门教程
+    - `03_Agent SDK 参考 - Python.md`: 完整 API 参考
+  - `notebooks/`: 该领域的 Jupyter notebooks（可选）
+
 - **`utils/`**: 项目共享工具函数
 
 - **`docs/`**: 项目级文档（如项目说明、架构文档）
@@ -155,12 +181,14 @@ uv run pytest --cov
 - 数据分析：numpy, pandas, matplotlib, seaborn, scipy
 - 交互式开发：jupyter, jupyterlab, ipython, ipykernel, ipywidgets
 - 代码质量：ruff
-- 实用工具：requests, python-dotenv, pydantic
-- LangChain 生态：
-  - 核心：langchain, langchain-core, langchain-community, langgraph
-  - 集成：langchain-openai, langchain-anthropic, langchain-google-vertexai
-  - 工具：tavily, mcp, langsmith
-  - 文档处理：pypdf, langchain-text-splitters
+- 实用工具：requests, python-dotenv, pydantic, httpx
+- AI 代理框架：
+  - LangChain 生态：langchain, langchain-core, langchain-community, langgraph
+  - LangChain 集成：langchain-openai, langchain-anthropic, langchain-google-vertexai
+  - LangChain 工具：tavily, mcp, langsmith
+  - Pydantic AI：pydantic-ai, pydantic-ai-slim
+  - Claude Agent SDK：claude-agent-sdk
+- 文档处理：pypdf, langchain-text-splitters
 
 开发依赖：
 - 测试：pytest, pytest-cov
@@ -185,6 +213,24 @@ uv run python utils/env_utils.py
 ```
 
 详细使用说明请参阅 `03_langchain_foundation/docs/README.md`
+
+### Claude Agent SDK 环境配置
+
+使用 Claude Agent SDK 模块时需要配置：
+
+```bash
+# 1. 配置环境变量
+cd 05_claude_agent_sdk/my-agent
+cp .env.example .env
+# 编辑 .env 文件，填入你的 API 密钥
+
+# 2. 运行 Hello World 示例
+uv run python 05_claude_agent_sdk/my-agent/hello.py
+```
+
+**学习方式**：本模块采用文档驱动学习，不提供预先写好的示例代码。推荐先阅读 `05_claude_agent_sdk/docs/` 中的完整文档，然后在 `my-agent/` 或新项目中自主实验。
+
+详细使用说明请参阅 `05_claude_agent_sdk/README.md` 和 `05_claude_agent_sdk/docs/README.md`
 
 ### Git 工作流
 
