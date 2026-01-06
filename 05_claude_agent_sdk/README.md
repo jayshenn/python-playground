@@ -23,17 +23,22 @@ Claude Agent SDK 提供了与 Claude Code 相同的工具、代理循环和上�
 
 ```
 05_claude_agent_sdk/
-├── my-agent/           # 示例项目：Bug 检测和修复代理
-│   ├── agent.py        # 主代理脚本
-│   ├── agent_debug.py  # 调试版本
-│   ├── utils.py        # 测试代码
-│   ├── .env.example    # 环境变量模板
-│   └── README.md       # 项目说明
-├── docs/               # 学习文档
-│   └── README.md       # 文档索引
-├── notebooks/          # Jupyter notebooks（可选）
-├── tests/              # 测试代码
-└── README.md           # 本文档
+├── my-agent/              # 学习实践项目
+│   ├── hello.py           # Hello World 示例（已实现）
+│   ├── .env.example       # 环境变量模板
+│   ├── .gitignore         # Git 忽略配置
+│   ├── __init__.py        # Python 包文件
+│   └── README.md          # 项目说明
+├── docs/                  # 完整的学习文档（文档驱动学习）
+│   ├── README.md          # 文档索引和学习指南
+│   ├── 01_Agent SDK 概览.md
+│   ├── 02_快速开始.md
+│   └── 03_Agent SDK 参考 - Python.md
+├── notebooks/             # Jupyter notebooks（可选）
+├── tests/                 # 测试代码
+│   └── __init__.py
+├── __init__.py            # 包初始化文件
+└── README.md              # 本文档
 ```
 
 ## 🚀 快速开始
@@ -78,76 +83,107 @@ export ANTHROPIC_AUTH_TOKEN=your-auth-token
 ### 4. 运行示例项目
 
 ```bash
+# 进入项目目录
 cd 05_claude_agent_sdk/my-agent
-uv run python agent_debug.py
+
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env 文件，填入你的 API 密钥
+
+# 从项目根目录运行 Hello World 示例
+cd ../..
+uv run python 05_claude_agent_sdk/my-agent/hello.py
 ```
 
 ## 📖 学习路径
 
+> 本模块采用**文档驱动学习**的方式。推荐先阅读 `docs/` 目录中的完整文档，再在 `my-agent/` 或新项目中实验。
+
 ### 阶段 1：了解基础概念（1-2 天）
 
-通过官方文档学习核心概念：
+通过官方文档或本地文档学习核心概念：
 
 1. **快速入门**
-   - [官方快速开始](https://platform.claude.com/docs/zh-CN/agent-sdk/quickstart)
+   - 阅读：[docs/02_快速开始.md](docs/02_快速开始.md) 或 [官方文档](https://platform.claude.com/docs/zh-CN/agent-sdk/quickstart)
    - 理解代理循环、工具、权限等基本概念
-   - 运行 `my-agent` 示例项目
+   - 实践：运行 `my-agent/hello.py` 并理解代码
 
-2. **内置工具**
-   - 文件操作：Read、Write、Edit
-   - 系统命令：Bash
-   - 搜索工具：Glob、Grep
-   - 网络工具：WebSearch、WebFetch
+2. **SDK 概览**
+   - 阅读：[docs/01_Agent SDK 概览.md](docs/01_Agent%20SDK%20概览.md)
+   - 理解 SDK 的整体架构和核心能力
+   - 对比 Agent SDK vs Client SDK 的使用场景
 
-3. **权限控制**
+3. **内置工具**
+   - 阅读：[docs/03_Agent SDK 参考 - Python.md](docs/03_Agent%20SDK%20参考%20-%20Python.md) 中的工具部分
+   - 了解 Read、Write、Edit、Bash、Glob、Grep、WebSearch、WebFetch
+   - 实践：在 `my-agent/` 中创建工具使用示例
+
+4. **权限控制**
+   - 阅读 API 参考中的权限部分
    - `bypassPermissions`：自动批准所有操作
    - `acceptEdits`：自动批准编辑操作
    - `interactive`：需要用户确认（默认）
+   - 实践：测试不同权限模式的行为
 
 ### 阶段 2：掌握高级特性（3-5 天）
 
-通过文档和实验学习高级功能：
+通过官方文档和实验学习高级功能：
 
-4. **钩子系统**
-   - [钩子文档](https://platform.claude.com/docs/zh-CN/agent-sdk/hooks)
-   - PreToolUse、PostToolUse
-   - SessionStart、SessionEnd
-   - 实战：添加审计日志、自定义验证
+5. **钩子系统**
+   - 阅读：[官方钩子文档](https://platform.claude.com/docs/zh-CN/agent-sdk/hooks)
+   - PreToolUse、PostToolUse、SessionStart、SessionEnd
+   - 实践：在 `my-agent/` 中实现审计日志、自定义验证
 
-5. **子代理**
-   - [子代理文档](https://platform.claude.com/docs/zh-CN/agent-sdk/subagents)
+6. **子代理**
+   - 阅读：[官方子代理文档](https://platform.claude.com/docs/zh-CN/agent-sdk/subagents)
    - 任务委派和并行处理
    - 自定义代理类型
-   - 实战：创建专门的分析代理
+   - 实践：创建专门的分析代理
 
-6. **会话管理**
-   - [会话文档](https://platform.claude.com/docs/zh-CN/agent-sdk/sessions)
+7. **会话管理**
+   - 阅读：[官方会话文档](https://platform.claude.com/docs/zh-CN/agent-sdk/sessions)
    - 上下文保持和多轮对话
    - 会话恢复和分叉
-   - 实战：构建对话式代理
+   - 实践：构建对话式代理
 
-7. **MCP 集成**
-   - [MCP 文档](https://platform.claude.com/docs/zh-CN/agent-sdk/mcp)
+8. **MCP 集成**
+   - 阅读：[官方 MCP 文档](https://platform.claude.com/docs/zh-CN/agent-sdk/mcp)
    - 连接外部系统（数据库、浏览器等）
    - 使用社区 MCP 服务器
-   - 实战：集成 Playwright 进行浏览器自动化
+   - 实践：集成 Playwright 进行浏览器自动化
 
 ### 阶段 3：构建生产级应用（1-2 周）
 
 通过项目实践巩固所学：
 
-8. **项目实践**
-   - 扩展 `my-agent` 项目
+9. **项目实践**
+   - 基于 `my-agent/` 创建完整的应用项目
    - 添加新功能和工具
    - 实现错误处理和日志
    - 性能优化
 
-9. **最佳实践**
+10. **最佳实践**
    - 安全性：API 密钥管理、工具限制
    - 性能：成本控制、响应时间优化
    - 可维护性：代码组织、测试覆盖
 
 ## 💡 使用示例
+
+### 最简示例：Hello World
+
+这是 `my-agent/hello.py` 的内容，最简单的入门示例：
+
+```python
+import asyncio
+from claude_agent_sdk import query
+
+async def main():
+    """向 Claude 问好"""
+    async for message in query(prompt="你好"):
+        print(message)
+
+asyncio.run(main())
+```
 
 ### 基础示例：文件操作
 
@@ -284,30 +320,31 @@ if os.environ.get("ANTHROPIC_BASE_URL"):
 
 ## 📝 学习建议
 
-1. **先读文档，再动手**
-   - 完整阅读官方文档的相关章节
-   - 理解概念和原理
-   - 然后在 `my-agent` 或新项目中实验
+1. **文档驱动，先读后做**
+   - 完整阅读 `docs/` 目录下的文档或官方在线文档
+   - 理解概念和原理后再动手实践
+   - 在 `my-agent/` 中创建实验代码验证所学
 
 2. **边学边记录**
-   - 在 `docs/` 目录下创建你的学习笔记
+   - 推荐在 `docs/` 目录下创建你的学习笔记
    - 记录遇到的问题和解决方案
-   - 总结最佳实践
+   - 总结最佳实践和经验教训
 
 3. **从简单到复杂**
-   - 先掌握基本的文件操作和命令执行
+   - 从 `hello.py` 开始，理解最基本的用法
+   - 逐步尝试内置工具、权限控制
    - 再学习钩子、子代理等高级特性
-   - 最后构建复杂的生产级应用
+   - 最后构建完整的生产级应用
 
-4. **多看示例代码**
+4. **多看官方示例**
    - [官方示例仓库](https://github.com/anthropics/claude-agent-sdk-demos)
    - 学习他人的实现方式
    - 理解不同场景的最佳实践
 
-5. **实践项目驱动**
-   - 基于 `my-agent` 扩展功能
-   - 或创建自己的项目解决实际问题
-   - 在实践中深化理解
+5. **项目驱动学习**
+   - 在 `my-agent/` 中创建你的实验项目
+   - 解决实际问题，在实践中深化理解
+   - 将所学知识应用到真实场景
 
 ## 🆚 Agent SDK vs Client SDK
 
