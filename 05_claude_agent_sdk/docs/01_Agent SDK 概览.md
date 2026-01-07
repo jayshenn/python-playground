@@ -8,10 +8,9 @@
 Claude Code SDK 已重命名为 Claude Agent SDK。如果您正在从旧 SDK 迁移，请参阅[迁移指南](/docs/zh-CN/agent-sdk/migration-guide)。
 </Note>
 
-构建能够自主读取文件、运行命令、搜索网络、编辑代码等的 AI 代理。Agent SDK 为您提供了与 Claude Code 相同的工具、代理循环和上下文管理，可在 Python 和 TypeScript 中编程。
+构建能够自主读取文件、运行命令、搜索网络、编辑代码等的 AI 代理。Agent SDK 为您提供了与 Claude Code 相同的工具、代理循环和上下文管理，使用 Python 编程。
 
-<CodeGroup>
-```python Python
+```python
 import asyncio
 from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -24,18 +23,6 @@ async def main():
 
 asyncio.run(main())
 ```
-
-```typescript TypeScript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-for await (const message of query({
-  prompt: "Find and fix the bug in auth.py",
-  options: { allowedTools: ["Read", "Edit", "Bash"] }
-})) {
-  console.log(message);  // Claude reads the file, finds the bug, edits it
-}
-```
-</CodeGroup>
 
 Agent SDK 包含用于读取文件、运行命令和编辑代码的内置工具，因此您的代理可以立即开始工作，无需您实现工具执行。深入了解快速入门或探索使用 SDK 构建的真实代理：
 
@@ -52,286 +39,180 @@ Agent SDK 包含用于读取文件、运行命令和编辑代码的内置工具�
 
 Claude Code 强大的一切功能都可在 SDK 中使用：
 
-<Tabs>
-  <Tab title="内置工具">
-    您的代理可以开箱即用地读取文件、运行命令和搜索代码库。关键工具包括：
+### 内置工具
 
-    | 工具 | 功能 |
-    |------|------|
-    | **Read** | 读取工作目录中的任何文件 |
-    | **Write** | 创建新文件 |
-    | **Edit** | 对现有文件进行精确编辑 |
-    | **Bash** | 运行终端命令、脚本、git 操作 |
-    | **Glob** | 按模式查找文件（`**/*.ts`、`src/**/*.py`） |
-    | **Grep** | 使用正则表达式搜索文件内容 |
-    | **WebSearch** | 搜索网络获取最新信息 |
-    | **WebFetch** | 获取并解析网页内容 |
+您的代理可以开箱即用地读取文件、运行命令和搜索代码库。关键工具包括：
 
-    此示例创建一个搜索代码库中所有 TODO 注释的代理：
+| 工具 | 功能 |
+|------|------|
+| **Read** | 读取工作目录中的任何文件 |
+| **Write** | 创建新文件 |
+| **Edit** | 对现有文件进行精确编辑 |
+| **Bash** | 运行终端命令、脚本、git 操作 |
+| **Glob** | 按模式查找文件（`**/*.ts`、`src/**/*.py`） |
+| **Grep** | 使用正则表达式搜索文件内容 |
+| **WebSearch** | 搜索网络获取最新信息 |
+| **WebFetch** | 获取并解析网页内容 |
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+此示例创建一个搜索代码库中所有 TODO 注释的代理：
 
-    async def main():
-        async for message in query(
-            prompt="Find all TODO comments and create a summary",
-            options=ClaudeAgentOptions(allowed_tools=["Read", "Glob", "Grep"])
-        ):
-            print(message)
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    asyncio.run(main())
-    ```
+async def main():
+    async for message in query(
+        prompt="Find all TODO comments and create a summary",
+        options=ClaudeAgentOptions(allowed_tools=["Read", "Glob", "Grep"])
+    ):
+        print(message)
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
+asyncio.run(main())
+```
 
-    for await (const message of query({
-      prompt: "Find all TODO comments and create a summary",
-      options: { allowedTools: ["Read", "Glob", "Grep"] }
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+### 钩子
 
-  </Tab>
-  <Tab title="钩子">
-    在代理生命周期的关键点运行自定义代码。钩子可以执行 shell 命令或自定义脚本来验证、记录、阻止或转换代理行为。
+在代理生命周期的关键点运行自定义代码。钩子可以执行 shell 命令或自定义脚本来验证、记录、阻止或转换代理行为。
 
-    **可用钩子：** `PreToolUse`、`PostToolUse`、`Stop`、`SessionStart`、`SessionEnd`、`UserPromptSubmit` 等。
+**可用钩子：** `PreToolUse`、`PostToolUse`、`Stop`、`SessionStart`、`SessionEnd`、`UserPromptSubmit` 等。
 
-    此示例将所有文件更改记录到审计文件：
+此示例将所有文件更改记录到审计文件：
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        async for message in query(
-            prompt="Suggest improvements to utils.py",
-            options=ClaudeAgentOptions(
-                permission_mode="acceptEdits",
-                hooks={
-                    "PostToolUse": [{
-                        "matcher": "Edit|Write",
-                        "hooks": [{"type": "command", "command": "echo \"$(date): file modified\" >> ./audit.log"}]
-                    }]
-                }
-            )
-        ):
-            print(message)
+async def main():
+    async for message in query(
+        prompt="Suggest improvements to utils.py",
+        options=ClaudeAgentOptions(
+            permission_mode="acceptEdits",
+            hooks={
+                "PostToolUse": [{
+                    "matcher": "Edit|Write",
+                    "hooks": [{"type": "command", "command": "echo \"$(date): file modified\" >> ./audit.log"}]
+                }]
+            }
+        )
+    ):
+        print(message)
 
-    asyncio.run(main())
-    ```
+asyncio.run(main())
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
+[了解更多关于钩子的信息 →](/docs/zh-CN/agent-sdk/hooks)
 
-    for await (const message of query({
-      prompt: "Suggest improvements to utils.py",
-      options: {
-        permissionMode: "acceptEdits",
-        hooks: {
-          PostToolUse: [{
-            matcher: "Edit|Write",
-            hooks: [{ type: "command", command: "echo \"$(date): file modified\" >> ./audit.log" }]
-          }]
-        }
-      }
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+### 子代理
 
-    [了解更多关于钩子的信息 →](/docs/zh-CN/agent-sdk/hooks)
-  </Tab>
-  <Tab title="子代理">
-    生成专门的代理来处理专注的子任务。您的主代理委派工作，子代理报告结果。
+生成专门的代理来处理专注的子任务。您的主代理委派工作，子代理报告结果。
 
-    启用 `Task` 工具让 Claude 在决定任务足够复杂以受益于委派时生成子代理。Claude 根据任务复杂性自动确定何时使用子代理。
+启用 `Task` 工具让 Claude 在决定任务足够复杂以受益于委派时生成子代理。Claude 根据任务复杂性自动确定何时使用子代理。
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        async for message in query(
-            prompt="Analyze this codebase for security vulnerabilities",
-            options=ClaudeAgentOptions(allowed_tools=["Read", "Glob", "Grep", "Task"])
-        ):
-            print(message)
+async def main():
+    async for message in query(
+        prompt="Analyze this codebase for security vulnerabilities",
+        options=ClaudeAgentOptions(allowed_tools=["Read", "Glob", "Grep", "Task"])
+    ):
+        print(message)
 
-    asyncio.run(main())
-    ```
+asyncio.run(main())
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
+您也可以使用 `agents` 选项定义自定义代理类型，以实现更专门的委派模式。
 
-    for await (const message of query({
-      prompt: "Analyze this codebase for security vulnerabilities",
-      options: {
-        allowedTools: ["Read", "Glob", "Grep", "Task"]
-      }
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+[了解更多关于子代理的信息 →](/docs/zh-CN/agent-sdk/subagents)
 
-    您也可以使用 `agents` 选项定义自定义代理类型，以实现更专门的委派模式。
+### MCP
 
-    [了解更多关于子代理的信息 →](/docs/zh-CN/agent-sdk/subagents)
-  </Tab>
-  <Tab title="MCP">
-    通过模型上下文协议连接到外部系统：数据库、浏览器、API 和[数百个更多](https://github.com/modelcontextprotocol/servers)。
+通过模型上下文协议连接到外部系统：数据库、浏览器、API 和[数百个更多](https://github.com/modelcontextprotocol/servers)。
 
-    此示例连接 [Playwright MCP 服务器](https://github.com/microsoft/playwright-mcp)以为您的代理提供浏览器自动化功能：
+此示例连接 [Playwright MCP 服务器](https://github.com/microsoft/playwright-mcp)以为您的代理提供浏览器自动化功能：
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        async for message in query(
-            prompt="Open example.com and describe what you see",
-            options=ClaudeAgentOptions(
-                mcp_servers={
-                    "playwright": {"command": "npx", "args": ["@playwright/mcp@latest"]}
-                }
-            )
-        ):
-            print(message)
+async def main():
+    async for message in query(
+        prompt="Open example.com and describe what you see",
+        options=ClaudeAgentOptions(
+            mcp_servers={
+                "playwright": {"command": "npx", "args": ["@playwright/mcp@latest"]}
+            }
+        )
+    ):
+        print(message)
 
-    asyncio.run(main())
-    ```
+asyncio.run(main())
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
+[了解更多关于 MCP 的信息 →](/docs/zh-CN/agent-sdk/mcp)
 
-    for await (const message of query({
-      prompt: "Open example.com and describe what you see",
-      options: {
-        mcpServers: {
-          playwright: { command: "npx", args: ["@playwright/mcp@latest"] }
-        }
-      }
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+### 权限
 
-    [了解更多关于 MCP 的信息 →](/docs/zh-CN/agent-sdk/mcp)
-  </Tab>
-  <Tab title="权限">
-    精确控制您的代理可以使用哪些工具。允许安全操作、阻止危险操作或要求对敏感操作进行批准。
+精确控制您的代理可以使用哪些工具。允许安全操作、阻止危险操作或要求对敏感操作进行批准。
 
-    此示例创建一个只读代理，可以分析但不能修改代码：
+此示例创建一个只读代理，可以分析但不能修改代码：
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        async for message in query(
-            prompt="Review this code for best practices",
-            options=ClaudeAgentOptions(
-                allowed_tools=["Read", "Glob", "Grep"],
-                permission_mode="bypassPermissions"
-            )
-        ):
-            print(message)
+async def main():
+    async for message in query(
+        prompt="Review this code for best practices",
+        options=ClaudeAgentOptions(
+            allowed_tools=["Read", "Glob", "Grep"],
+            permission_mode="bypassPermissions"
+        )
+    ):
+        print(message)
 
-    asyncio.run(main())
-    ```
+asyncio.run(main())
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
+[了解更多关于权限的信息 →](/docs/zh-CN/agent-sdk/permissions)
 
-    for await (const message of query({
-      prompt: "Review this code for best practices",
-      options: {
-        allowedTools: ["Read", "Glob", "Grep"],
-        permissionMode: "bypassPermissions"
-      }
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+### 会话
 
-    [了解更多关于权限的信息 →](/docs/zh-CN/agent-sdk/permissions)
-  </Tab>
-  <Tab title="会话">
-    在多次交互中保持上下文。Claude 记住读取的文件、完成的分析和对话历史。稍后恢复会话，或分叉会话以探索不同的方法。
+在多次交互中保持上下文。Claude 记住读取的文件、完成的分析和对话历史。稍后恢复会话，或分叉会话以探索不同的方法。
 
-    此示例从第一个查询中捕获会话 ID，然后恢复以继续使用完整上下文：
+此示例从第一个查询中捕获会话 ID，然后恢复以继续使用完整上下文：
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        session_id = None
+async def main():
+    session_id = None
 
-        # First query: capture the session ID
-        async for message in query(
-            prompt="Read the authentication module",
-            options=ClaudeAgentOptions(allowed_tools=["Read", "Glob"])
-        ):
-            if hasattr(message, 'subtype') and message.subtype == 'init':
-                session_id = message.data.get('session_id')
+    # First query: capture the session ID
+    async for message in query(
+        prompt="Read the authentication module",
+        options=ClaudeAgentOptions(allowed_tools=["Read", "Glob"])
+    ):
+        if hasattr(message, 'subtype') and message.subtype == 'init':
+            session_id = message.data.get('session_id')
 
-        # Resume with full context from the first query
-        async for message in query(
-            prompt="Now find all places that call it",  # "it" = auth module
-            options=ClaudeAgentOptions(resume=session_id)
-        ):
-            pass
+    # Resume with full context from the first query
+    async for message in query(
+        prompt="Now find all places that call it",  # "it" = auth module
+        options=ClaudeAgentOptions(resume=session_id)
+    ):
+        pass
 
-    asyncio.run(main())
-    ```
+asyncio.run(main())
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    let sessionId: string | undefined;
-
-    // First query: capture the session ID
-    for await (const message of query({
-      prompt: "Read the authentication module",
-      options: { allowedTools: ["Read", "Glob"] }
-    })) {
-      if (message.type === "system" && message.subtype === "init") {
-        sessionId = message.session_id;
-      }
-    }
-
-    // Resume with full context from the first query
-    for await (const message of query({
-      prompt: "Now find all places that call it",  // "it" = auth module
-      options: { resume: sessionId }
-    })) {
-      // Process messages...
-    }
-    ```
-    </CodeGroup>
-
-    [了解更多关于会话的信息 →](/docs/zh-CN/agent-sdk/sessions)
-  </Tab>
-</Tabs>
+[了解更多关于会话的信息 →](/docs/zh-CN/agent-sdk/sessions)
 
 ### Claude Code 功能
 
-SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能，请在您的选项中设置 `setting_sources=["project"]`（Python）或 `settingSources: ['project']`（TypeScript）。
+SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能，请在您的选项中设置 `setting_sources=["project"]`。
 
 | 功能 | 描述 | 位置 |
 |------|------|------|
@@ -346,39 +227,27 @@ SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能
   <Step title="安装 Claude Code">
     SDK 使用 Claude Code 作为其运行时：
 
-    <Tabs>
-      <Tab title="macOS/Linux/WSL">
-        ```bash
-        curl -fsSL https://claude.ai/install.sh | bash
-        ```
-      </Tab>
-      <Tab title="Homebrew">
-        ```bash
-        brew install --cask claude-code
-        ```
-      </Tab>
-      <Tab title="npm">
-        ```bash
-        npm install -g @anthropic-ai/claude-code
-        ```
-      </Tab>
-    </Tabs>
+    **macOS/Linux/WSL:**
+    ```bash
+    curl -fsSL https://claude.ai/install.sh | bash
+    ```
+
+    **Homebrew:**
+    ```bash
+    brew install --cask claude-code
+    ```
+
+    **npm:**
+    ```bash
+    npm install -g @anthropic-ai/claude-code
+    ```
 
     有关 Windows 和其他选项，请参阅 [Claude Code 设置](https://docs.anthropic.com/en/docs/claude-code/setup)。
   </Step>
   <Step title="安装 SDK">
-    <Tabs>
-      <Tab title="TypeScript">
-        ```bash
-        npm install @anthropic-ai/claude-agent-sdk
-        ```
-      </Tab>
-      <Tab title="Python">
-        ```bash
-        pip install claude-agent-sdk
-        ```
-      </Tab>
-    </Tabs>
+    ```bash
+    pip install claude-agent-sdk
+    ```
   </Step>
   <Step title="设置您的 API 密钥">
     ```bash
@@ -399,8 +268,7 @@ SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能
   <Step title="运行您的第一个代理">
     此示例创建一个使用内置工具列出当前目录中文件的代理。
 
-    <CodeGroup>
-    ```python Python
+    ```python
     import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -413,18 +281,6 @@ SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能
 
     asyncio.run(main())
     ```
-
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "What files are in this directory?",
-      options: { allowedTools: ["Bash", "Glob"] },
-    })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
   </Step>
 </Steps>
 
@@ -434,67 +290,48 @@ SDK 还支持 Claude Code 的基于文件系统的配置。要使用这些功能
 
 Claude 平台提供了多种使用 Claude 构建的方式。以下是 Agent SDK 的适用场景：
 
-<Tabs>
-  <Tab title="Agent SDK vs Client SDK">
-    [Anthropic Client SDK](/docs/zh-CN/api/client-sdks) 为您提供直接 API 访问：您发送提示并自己实现工具执行。**Agent SDK** 为您提供具有内置工具执行的 Claude。
+### Agent SDK vs Client SDK
 
-    使用 Client SDK，您实现工具循环。使用 Agent SDK，Claude 处理它：
+[Anthropic Client SDK](/docs/zh-CN/api/client-sdks) 为您提供直接 API 访问：您发送提示并自己实现工具执行。**Agent SDK** 为您提供具有内置工具执行的 Claude。
 
-    <CodeGroup>
-    ```python Python
-    # Client SDK: You implement the tool loop
-    response = client.messages.create(...)
-    while response.stop_reason == "tool_use":
-        result = your_tool_executor(response.tool_use)
-        response = client.messages.create(tool_result=result, ...)
+使用 Client SDK，您实现工具循环。使用 Agent SDK，Claude 处理它：
 
-    # Agent SDK: Claude handles tools autonomously
-    async for message in query(prompt="Fix the bug in auth.py"):
-        print(message)
-    ```
+```python
+# Client SDK: You implement the tool loop
+response = client.messages.create(...)
+while response.stop_reason == "tool_use":
+    result = your_tool_executor(response.tool_use)
+    response = client.messages.create(tool_result=result, ...)
 
-    ```typescript TypeScript
-    // Client SDK: You implement the tool loop
-    let response = await client.messages.create({...});
-    while (response.stop_reason === "tool_use") {
-      const result = yourToolExecutor(response.tool_use);
-      response = await client.messages.create({ tool_result: result, ... });
-    }
+# Agent SDK: Claude handles tools autonomously
+async for message in query(prompt="Fix the bug in auth.py"):
+    print(message)
+```
 
-    // Agent SDK: Claude handles tools autonomously
-    for await (const message of query({ prompt: "Fix the bug in auth.py" })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
-  </Tab>
-  <Tab title="Agent SDK vs Claude Code CLI">
-    相同的功能，不同的界面：
+### Agent SDK vs Claude Code CLI
 
-    | 用例 | 最佳选择 |
-    |------|---------|
-    | 交互式开发 | CLI |
-    | CI/CD 管道 | SDK |
-    | 自定义应用程序 | SDK |
-    | 一次性任务 | CLI |
-    | 生产自动化 | SDK |
+相同的功能，不同的界面：
 
-    许多团队同时使用两者：CLI 用于日常开发，SDK 用于生产。工作流在它们之间直接转换。
-  </Tab>
-</Tabs>
+| 用例 | 最佳选择 |
+|------|---------|
+| 交互式开发 | CLI |
+| CI/CD 管道 | SDK |
+| 自定义应用程序 | SDK |
+| 一次性任务 | CLI |
+| 生产自动化 | SDK |
+
+许多团队同时使用两者：CLI 用于日常开发，SDK 用于生产。工作流在它们之间直接转换。
 
 ## 更新日志
 
 查看完整的更新日志以了解 SDK 更新、bug 修复和新功能：
 
-- **TypeScript SDK**：[查看 CHANGELOG.md](https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md)
 - **Python SDK**：[查看 CHANGELOG.md](https://github.com/anthropics/claude-agent-sdk-python/blob/main/CHANGELOG.md)
 
 ## 报告 bug
 
 如果您在 Agent SDK 中遇到 bug 或问题：
 
-- **TypeScript SDK**：[在 GitHub 上报告问题](https://github.com/anthropics/claude-agent-sdk-typescript/issues)
 - **Python SDK**：[在 GitHub 上报告问题](https://github.com/anthropics/claude-agent-sdk-python/issues)
 
 ## 品牌指南
@@ -524,9 +361,6 @@ Claude Agent SDK 的使用受 [Anthropic 商业服务条款](https://www.anthrop
   </Card>
   <Card title="示例代理" icon="star" href="https://github.com/anthropics/claude-agent-sdk-demos">
     电子邮件助手、研究代理等
-  </Card>
-  <Card title="TypeScript SDK" icon="code" href="/docs/zh-CN/agent-sdk/typescript">
-    完整的 TypeScript API 参考和示例
   </Card>
   <Card title="Python SDK" icon="code" href="/docs/zh-CN/agent-sdk/python">
     完整的 Python API 参考和示例
